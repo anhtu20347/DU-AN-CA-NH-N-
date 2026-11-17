@@ -7,17 +7,86 @@ window.App = {
     isCloudConnected: false
   },
 
-  // Khởi chạy ứng dụng
   init() {
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Tải dữ liệu tạm trong trình duyệt hoặc dữ liệu mặc định
     const cached = localStorage.getItem("anhtu_portfolio_data");
     this.state.data = cached ? JSON.parse(cached) : structuredClone(window.DefaultPortfolioData);
 
-    // Kiểm tra cấu hình Firebase Cloud
     this.initFirebaseIfConfigured();
     this.renderAll();
+    this.initSnowfall();
+    this.initScrollSpy();
+  },
+
+  // Tạo hiệu ứng những bông tuyết trắng tròn rơi liên tục trên màn hình
+  initSnowfall() {
+    const canvas = document.getElementById("snow-canvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const flakeCount = 110;
+    const flakes = Array.from({ length: flakeCount }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 3.5 + 1.2, // Bán kính bông tuyết tròn
+      speedY: Math.random() * 1.4 + 0.5,
+      speedX: (Math.random() - 0.5) * 0.7,
+      swing: Math.random() * Math.PI * 2,
+      swingSpeed: Math.random() * 0.02 + 0.008,
+      opacity: Math.random() * 0.55 + 0.35
+    }));
+
+    function drawSnow() {
+      ctx.clearRect(0, 0, width, height);
+      for (const f of flakes) {
+        f.swing += f.swingSpeed;
+        f.y += f.speedY;
+        f.x += f.speedX + Math.sin(f.swing) * 0.45;
+
+        if (f.y > height + 10) {
+          f.y = -10;
+          f.x = Math.random() * width;
+        }
+        if (f.x > width + 10) f.x = -10;
+        if (f.x < -10) f.x = width + 10;
+
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = "#ffffff";
+        ctx.fill();
+      }
+      requestAnimationFrame(drawSnow);
+    }
+
+    drawSnow();
+  },
+
+  // Tự động sáng nút trên thanh menu khi cuộn trang
+  initScrollSpy() {
+    window.addEventListener("scroll", () => {
+      const sections = ["home", "projects", "blog"];
+      let current = "home";
+      for (const id of sections) {
+        const el = document.getElementById(`tab-${id}`);
+        if (el && window.scrollY >= el.offsetTop - 220) {
+          current = id;
+        }
+      }
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === current);
+      });
+    });
   },
 
   initFirebaseIfConfigured() {
@@ -35,7 +104,6 @@ window.App = {
       this.state.isCloudConnected = true;
       this.updateSyncBadge("Đã đồng bộ Cloud", true);
 
-      // Lắng nghe dữ liệu thời gian thực từ Firebase Realtime Database
       firebase.database().ref("portfolioData").on("value", (snapshot) => {
         const cloudData = snapshot.val();
         if (cloudData) {
@@ -43,12 +111,10 @@ window.App = {
           localStorage.setItem("anhtu_portfolio_data", JSON.stringify(cloudData));
           this.renderAll();
         } else if (this.state.isAdmin) {
-          // Đẩy dữ liệu khởi tạo lên Cloud lần đầu
           this.saveData();
         }
       });
 
-      // Kiểm tra phiên đăng nhập Admin duy nhất
       firebase.auth().onAuthStateChanged((user) => {
         const allowedEmail = (configObj.adminEmail || "").trim().toLowerCase();
         if (user && user.email.toLowerCase() === allowedEmail) {
@@ -73,7 +139,7 @@ window.App = {
 
     if (isAdmin) {
       toolbar.classList.remove("hidden");
-      adminBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> Đang ở chế độ Admin`;
+      adminBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> Admin`;
       emailSpan.textContent = emailLabel || "Admin";
     } else {
       toolbar.classList.add("hidden");
@@ -82,7 +148,6 @@ window.App = {
     this.renderAll();
   },
 
-  // Lưu mọi thay đổi (Không bao giờ mất khi sửa code giao diện)
   async saveData() {
     localStorage.setItem("anhtu_portfolio_data", JSON.stringify(this.state.data));
     if (this.state.isCloudConnected && firebase.apps.length) {
@@ -103,24 +168,25 @@ window.App = {
     this.setAdminSession(false, null);
   },
 
+  // Bấm vào menu sẽ cuộn mượt mà xuống phần đó trên cùng 1 trang
   switchTab(tabName) {
     this.state.activeTab = tabName;
     document.querySelectorAll(".nav-btn").forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.tab === tabName);
     });
-    document.querySelectorAll(".tab-section").forEach((sec) => {
-      sec.classList.toggle("active", sec.id === `tab-${tabName}`);
-    });
+    const targetSection = document.getElementById(`tab-${tabName}`);
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   },
 
   updateSyncBadge(text, isOnline) {
     const badge = document.getElementById("sync-status");
     if (!badge) return;
     badge.textContent = text;
-    badge.style.color = isOnline ? "#10b981" : "#f59e0b";
+    badge.style.color = isOnline ? "#34d399" : "#fbbf24";
   },
 
-  // Chuyển đổi và tự động nén ảnh tải lên thành chuỗi Base64 nhẹ để lưu thẳng vào Database miễn phí
   readImageCompressed(file, maxWidth = 900) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -148,7 +214,6 @@ window.App = {
     });
   },
 
-  // Đọc file đính kèm (PDF, DOCX, ZIP nhỏ < 2MB) thành DataURL để khách tải về
   readFileAsDataURL(file) {
     return new Promise((resolve, reject) => {
       if (file.size > 2.5 * 1024 * 1024) {
