@@ -9,14 +9,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- CSS chính -->
-  <link rel="stylesheet" href="src/styles.css" />
+  <!-- CSS chính (Thêm ?v=3 để ép trình duyệt tải ngay CSS mới) -->
+  <link rel="stylesheet" href="src/styles.css?v=3" />
 </head>
 <body>
   <!-- Nền Video Mùa Đông chuyển động vô tận -->
   <div class="video-bg-wrapper">
     <video id="bg-video" class="bg-video" autoplay loop muted playsinline>
       <source src="winter-bg.mp4" type="video/mp4" />
+      <source src="Christmas town .mp4" type="video/mp4" />
     </video>
     <div class="video-overlay"></div>
   </div>
@@ -73,9 +74,9 @@
 
   <!-- Nội dung 1 trang duy nhất (Single-page scroll) -->
   <main class="container main-content">
-    <section id="tab-home" class="tab-section"></section>
-    <section id="tab-projects" class="tab-section"></section>
-    <section id="tab-blog" class="tab-section"></section>
+    <section id="tab-home" class="tab-section active"></section>
+    <section id="tab-projects" class="tab-section active"></section>
+    <section id="tab-blog" class="tab-section active"></section>
   </main>
 
   <!-- Khu vực chứa Modal chỉnh sửa / đăng nhập -->
@@ -92,12 +93,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- Nạp các module -->
-  <script src="src/lib/default-data.js"></script>
-  <script src="src/lib/core.js"></script>
-  <script src="src/features/home.js"></script>
-  <script src="src/features/projects.js"></script>
-  <script src="src/features/blog.js"></script>
-  <script src="src/features/admin-panel.js"></script>
+  <!-- Nạp các module (Thêm ?v=3 để làm mới bộ nhớ đệm) -->
+  <script src="src/lib/default-data.js?v=3"></script>
+  <script src="src/lib/core.js?v=3"></script>
+  <script src="src/features/home.js?v=3"></script>
+  <script src="src/features/projects.js?v=3"></script>
+  <script src="src/features/blog.js?v=3"></script>
+  <script src="src/features/admin-panel.js?v=3"></script>
 </body>
 </html>
