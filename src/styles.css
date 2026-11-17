@@ -1,15 +1,17 @@
 :root {
-  --bg-main: #0b0f19;
-  --bg-card: #131b2e;
-  --bg-card-hover: #19233c;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
-  --accent: #38bdf8;
-  --accent-gradient: linear-gradient(135deg, #38bdf8, #818cf8);
-  --danger: #ef4444;
-  --success: #10b981;
-  --radius: 16px;
+  --border-frost: rgba(255, 255, 255, 0.42);
+  --border-frost-hover: rgba(186, 230, 253, 0.9);
+  --text-main: #ffffff;
+  --text-muted: #e2e8f0;
+  --accent: #7dd3fc;
+  --accent-gradient: linear-gradient(135deg, #bae6fd, #38bdf8);
+  --danger: #f87171;
+  --success: #34d399;
+  --radius: 18px;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 * {
@@ -20,12 +22,60 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg-main);
+  background-color: transparent;
   color: var(--text-main);
   line-height: 1.65;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+}
+
+/* Video nền chuyển động kiểu đi tới vô tận */
+.video-bg-wrapper {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -2;
+  overflow: hidden;
+  background: #090d16;
+}
+
+.bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: infiniteForward 28s ease-in-out infinite alternate;
+  transform-origin: center center;
+}
+
+@keyframes infiniteForward {
+  0% {
+    transform: scale(1) translateY(0px);
+  }
+  100% {
+    transform: scale(1.16) translateY(-10px);
+  }
+}
+
+/* Lớp phủ nhẹ giúp chữ trắng luôn nổi bật trên nền video đêm đông */
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(10, 15, 30, 0.25) 0%, rgba(5, 10, 20, 0.58) 100%);
+  z-index: -1;
+}
+
+/* Canvas Tuyết Rơi */
+.snow-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
 }
 
 .container {
@@ -35,14 +85,14 @@ body {
   width: 100%;
 }
 
-/* Navbar */
+/* Navbar trong suốt viền mảnh */
 .navbar {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(11, 15, 25, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
+  background: transparent;
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid var(--border-frost);
   padding: 14px 0;
 }
 
@@ -68,7 +118,8 @@ body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--accent-gradient);
+  background: #ffffff;
+  box-shadow: 0 0 10px #ffffff;
   display: inline-block;
 }
 
@@ -80,34 +131,33 @@ body {
 .nav-links {
   display: flex;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
   padding: 5px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  border: 1px solid var(--border-frost);
 }
 
 .nav-btn {
   background: transparent;
-  border: none;
-  color: var(--text-muted);
+  border: 1px solid transparent;
+  color: var(--text-main);
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 0.92rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
   display: flex;
   align-items: center;
   gap: 7px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
-.nav-btn:hover {
-  color: var(--text-main);
-}
-
+.nav-btn:hover,
 .nav-btn.active {
-  background: var(--accent-gradient);
-  color: #0b0f19;
+  background: transparent;
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.28);
 }
 
 .nav-actions {
@@ -118,17 +168,17 @@ body {
 
 .sync-badge {
   font-size: 0.78rem;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 99px;
-  background: rgba(16, 185, 129, 0.12);
+  background: transparent;
   color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid var(--success);
 }
 
 /* Admin Toolbar */
 .admin-toolbar {
-  background: linear-gradient(90deg, rgba(56, 189, 248, 0.15), rgba(129, 140, 248, 0.15));
-  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+  background: transparent;
+  border-bottom: 1px solid var(--border-frost);
   padding: 10px 0;
 }
 
@@ -157,38 +207,42 @@ body {
   gap: 8px;
 }
 
-/* Layout & Cards */
+/* Hiển thị tất cả các phần trên 1 trang duy nhất để cuộn đọc */
 .main-content {
   flex: 1;
-  padding-top: 36px;
-  padding-bottom: 60px;
+  padding-top: 40px;
+  padding-bottom: 80px;
 }
 
 .tab-section {
-  display: none;
-  animation: fadeIn 0.25s ease;
-}
-
-.tab-section.active {
   display: block;
+  margin-bottom: 72px;
+  scroll-margin-top: 95px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+/* Khung thẻ: Nền hoàn toàn trong suốt, chỉ giữ lại viền trắng băng giá */
+.card,
+.item-card {
+  background: transparent !important;
+  border: 1.5px solid var(--border-frost);
   border-radius: var(--radius);
   padding: 28px;
   margin-bottom: 24px;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.card:hover {
-  border-color: rgba(56, 189, 248, 0.25);
+.item-card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover,
+.item-card:hover {
+  border-color: var(--border-frost-hover);
+  box-shadow: 0 0 20px rgba(186, 230, 253, 0.2);
+  transform: translateY(-3px);
 }
 
 /* Hero Profile */
@@ -205,8 +259,9 @@ body {
   height: 200px;
   border-radius: 24px;
   overflow: hidden;
-  border: 2px solid rgba(56, 189, 248, 0.4);
-  background: #1e293b;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+  background: transparent;
 }
 
 .avatar-wrap img {
@@ -217,17 +272,18 @@ body {
 
 .hero-badge {
   display: inline-block;
-  padding: 5px 12px;
+  padding: 5px 14px;
   border-radius: 99px;
   font-size: 0.8rem;
   font-weight: 600;
-  background: rgba(56, 189, 248, 0.12);
+  background: transparent;
+  border: 1px solid var(--accent);
   color: var(--accent);
   margin-bottom: 12px;
 }
 
 .hero-title {
-  font-size: 2.2rem;
+  font-size: 2.3rem;
   font-weight: 800;
   margin-bottom: 8px;
 }
@@ -249,8 +305,8 @@ body {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid var(--border-frost);
   border-radius: 10px;
   color: var(--text-main);
   text-decoration: none;
@@ -260,16 +316,18 @@ body {
 }
 
 .pill-link:hover {
-  background: rgba(56, 189, 248, 0.15);
-  border-color: var(--accent);
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
-/* Grid Cards for Projects & Blog */
+/* Grid Cards cho Dự án & Bài viết */
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border-frost);
   flex-wrap: wrap;
   gap: 12px;
 }
@@ -280,18 +338,10 @@ body {
   gap: 22px;
 }
 
-.item-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
 .item-cover {
-  height: 190px;
-  background: #1e293b;
+  height: 195px;
+  background: transparent;
+  border-bottom: 1px solid var(--border-frost);
   overflow: hidden;
 }
 
@@ -311,27 +361,28 @@ body {
 .tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
 .tag {
-  font-size: 0.75rem;
-  padding: 3px 10px;
-  border-radius: 6px;
-  background: rgba(129, 140, 248, 0.14);
-  color: #a5b4fc;
+  font-size: 0.78rem;
+  padding: 4px 12px;
+  border-radius: 99px;
+  background: transparent;
+  border: 1px solid var(--border-frost);
+  color: #ffffff;
 }
 
 .item-title {
-  font-size: 1.2rem;
+  font-size: 1.22rem;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
 .item-desc {
   color: var(--text-muted);
-  font-size: 0.93rem;
+  font-size: 0.94rem;
   margin-bottom: 18px;
   white-space: pre-line;
   flex: 1;
@@ -342,44 +393,40 @@ body {
   flex-wrap: wrap;
   gap: 8px;
   padding-top: 14px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-frost);
 }
 
-/* Buttons */
+/* Buttons trong suốt có viền */
 .btn {
   padding: 9px 16px;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  border: none;
+  border: 1px solid var(--border-frost);
+  background: transparent;
+  color: var(--text-main);
   display: inline-flex;
   align-items: center;
   gap: 7px;
   text-decoration: none;
   transition: 0.2s;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.btn:hover {
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
 .btn-primary {
-  background: var(--accent-gradient);
-  color: #0b0f19;
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-main);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .btn-danger {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-color: var(--danger);
+  color: #fecaca;
 }
 
 .btn-sm {
@@ -387,12 +434,12 @@ body {
   font-size: 0.82rem;
 }
 
-/* Modal */
+/* Modal chỉnh sửa giữ nền kính mờ tối để dễ gõ chữ khi Admin thao tác */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -401,8 +448,8 @@ body {
 }
 
 .modal-box {
-  background: #131b2e;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(15, 23, 42, 0.88);
+  border: 1.5px solid var(--border-frost);
   border-radius: 18px;
   max-width: 600px;
   width: 100%;
@@ -427,8 +474,8 @@ body {
   width: 100%;
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid var(--border-color);
-  background: #0b0f19;
+  border: 1px solid var(--border-frost);
+  background: rgba(0, 0, 0, 0.45);
   color: var(--text-main);
   font-family: inherit;
   font-size: 0.94rem;
@@ -440,7 +487,7 @@ textarea.form-control {
 }
 
 .footer {
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-frost);
   padding: 24px 0;
   text-align: center;
   color: var(--text-muted);
