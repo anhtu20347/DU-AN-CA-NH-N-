@@ -9,21 +9,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- CSS chính (Thêm ?v=3 để ép trình duyệt tải ngay CSS mới) -->
-  <link rel="stylesheet" href="src/styles.css?v=3" />
+  <!-- CSS chính (kèm ?v=5 để làm mới giao diện ngay lập tức) -->
+  <link rel="stylesheet" href="src/styles.css?v=5" />
 </head>
 <body>
-  <!-- Nền Video Mùa Đông chuyển động vô tận -->
-  <div class="video-bg-wrapper">
-    <video id="bg-video" class="bg-video" autoplay loop muted playsinline>
-      <source src="winter-bg.mp4" type="video/mp4" />
-      <source src="Christmas town .mp4" type="video/mp4" />
-    </video>
-    <div class="video-overlay"></div>
+  <!-- Nền Ảnh Mùa Đông chuyển động vô tận -->
+  <div class="winter-bg-wrapper" style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -2; overflow: hidden;">
+    <!-- Lớp chuyển động vô tận (Đổi thành class "winter-bg-pan" nếu muốn ảnh trôi ngang nối tiếp 360 độ) -->
+    <div class="winter-bg-infinite"></div>
+    <div class="winter-bg-overlay"></div>
   </div>
 
   <!-- Hiệu ứng những bông tuyết trắng tròn rơi liên tục -->
-  <canvas id="snow-canvas" class="snow-canvas"></canvas>
+  <canvas id="snow-canvas" class="snow-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 50;"></canvas>
 
   <!-- Thanh điều hướng cuộn mượt tới từng mục -->
   <header class="navbar">
@@ -72,7 +70,7 @@
     </div>
   </div>
 
-  <!-- Nội dung 1 trang duy nhất (Single-page scroll) -->
+  <!-- Nội dung 1 trang duy nhất (Cuộn mượt từ trên xuống dưới) -->
   <main class="container main-content">
     <section id="tab-home" class="tab-section active"></section>
     <section id="tab-projects" class="tab-section active"></section>
@@ -93,12 +91,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- Nạp các module (Thêm ?v=3 để làm mới bộ nhớ đệm) -->
-  <script src="src/lib/default-data.js?v=3"></script>
-  <script src="src/lib/core.js?v=3"></script>
-  <script src="src/features/home.js?v=3"></script>
-  <script src="src/features/projects.js?v=3"></script>
-  <script src="src/features/blog.js?v=3"></script>
-  <script src="src/features/admin-panel.js?v=3"></script>
+  <!-- Nạp các module -->
+  <script src="src/lib/default-data.js?v=5"></script>
+  <script src="src/lib/core.js?v=5"></script>
+  <script src="src/features/home.js?v=5"></script>
+  <script src="src/features/projects.js?v=5"></script>
+  <script src="src/features/blog.js?v=5"></script>
+  <script src="src/features/admin-panel.js?v=5"></script>
 </body>
 </html>
