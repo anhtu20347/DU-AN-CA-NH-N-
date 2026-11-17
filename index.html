@@ -1,1 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anh Tú | Personal Portfolio & Blog</title>
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- CSS chính -->
+  <link rel="stylesheet" href="src/styles.css" />
+</head>
+<body>
+  <!-- Thanh điều hướng -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand" onclick="App.switchTab('home'); return false;">
+        <span class="brand-dot"></span> Anh Tú<span class="brand-sub">.space</span>
+      </a>
+      <nav class="nav-links">
+        <button class="nav-btn active" data-tab="home" onclick="App.switchTab('home')">
+          <i class="fa-regular fa-user"></i> Bản thân
+        </button>
+        <button class="nav-btn" data-tab="projects" onclick="App.switchTab('projects')">
+          <i class="fa-solid fa-layer-group"></i> Dự án & Hoạt động
+        </button>
+        <button class="nav-btn" data-tab="blog" onclick="App.switchTab('blog')">
+          <i class="fa-regular fa-newspaper"></i> Góc chia sẻ & Tài liệu
+        </button>
+      </nav>
+      <div class="nav-actions">
+        <span id="sync-status" class="sync-badge">Đang tải...</span>
+        <button id="admin-toggle-btn" class="btn btn-outline" onclick="AdminFeature.openAuthModal()">
+          <i class="fa-solid fa-lock"></i> Admin
+        </button>
+      </div>
+    </div>
+  </header>
 
+  <!-- Thanh công cụ chỉ hiện khi Admin đăng nhập -->
+  <div id="admin-toolbar" class="admin-toolbar hidden">
+    <div class="container admin-toolbar-inner">
+      <div class="admin-status">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Chế độ Quản trị viên (<strong id="admin-email-display">Admin</strong>) — Mọi thay đổi được lưu trực tiếp lên Cloud</span>
+      </div>
+      <div class="admin-actions">
+        <button class="btn btn-sm btn-secondary" onclick="AdminFeature.exportBackup()">
+          <i class="fa-solid fa-download"></i> Sao lưu JSON
+        </button>
+        <button class="btn btn-sm btn-secondary" onclick="AdminFeature.openFirebaseConfigModal()">
+          <i class="fa-solid fa-cloud"></i> Cấu hình Cloud
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="App.logoutAdmin()">
+          <i class="fa-solid fa-right-from-bracket"></i> Thoát Admin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nội dung chính được render bởi các file trong src/features/ -->
+  <main class="container main-content">
+    <section id="tab-home" class="tab-section active"></section>
+    <section id="tab-projects" class="tab-section"></section>
+    <section id="tab-blog" class="tab-section"></section>
+  </main>
+
+  <!-- Khu vực chứa Modal chỉnh sửa / đăng nhập -->
+  <div id="modal-root"></div>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Anh Tú. Nền tảng lưu trữ độc lập mã nguồn & dữ liệu.</p>
+    </div>
+  </footer>
+
+  <!-- Firebase SDK (Compat giúp chạy trực tiếp trên GitHub Pages không cần cài Node.js) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+  <!-- Nạp các module theo cấu trúc src/lib và src/features -->
+  <script src="src/lib/default-data.js"></script>
+  <script src="src/lib/core.js"></script>
+  <script src="src/features/home.js"></script>
+  <script src="src/features/projects.js"></script>
+  <script src="src/features/blog.js"></script>
+  <script src="src/features/admin-panel.js"></script>
+</body>
+</html>
