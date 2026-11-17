@@ -1,6 +1,6 @@
 :root {
-  --border-frost: rgba(255, 255, 255, 0.42);
-  --border-frost-hover: rgba(186, 230, 253, 0.9);
+  --border-frost: rgba(255, 255, 255, 0.45);
+  --border-frost-hover: rgba(186, 230, 253, 0.95);
   --text-main: #ffffff;
   --text-muted: #e2e8f0;
   --accent: #7dd3fc;
@@ -22,7 +22,7 @@ html {
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: transparent;
+  background-color: transparent !important;
   color: var(--text-main);
   line-height: 1.65;
   min-height: 100vh;
@@ -34,7 +34,7 @@ body {
 
 /* Video nền chuyển động kiểu đi tới vô tận */
 .video-bg-wrapper {
-  position: fixed;
+  position: fixed !important;
   inset: 0;
   width: 100vw;
   height: 100vh;
@@ -60,7 +60,6 @@ body {
   }
 }
 
-/* Lớp phủ nhẹ giúp chữ trắng luôn nổi bật trên nền video đêm đông */
 .video-overlay {
   position: absolute;
   inset: 0;
@@ -68,10 +67,11 @@ body {
   z-index: -1;
 }
 
-/* Canvas Tuyết Rơi */
+/* Canvas Tuyết Rơi cố định trên màn hình */
 .snow-canvas {
-  position: fixed;
-  inset: 0;
+  position: fixed !important;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   pointer-events: none;
@@ -90,7 +90,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: transparent;
+  background: transparent !important;
   backdrop-filter: blur(4px);
   border-bottom: 1px solid var(--border-frost);
   padding: 14px 0;
@@ -131,14 +131,14 @@ body {
 .nav-links {
   display: flex;
   gap: 8px;
-  background: transparent;
+  background: transparent !important;
   padding: 5px;
   border-radius: 14px;
   border: 1px solid var(--border-frost);
 }
 
 .nav-btn {
-  background: transparent;
+  background: transparent !important;
   border: 1px solid transparent;
   color: var(--text-main);
   padding: 8px 16px;
@@ -155,7 +155,8 @@ body {
 
 .nav-btn:hover,
 .nav-btn.active {
-  background: transparent;
+  background: transparent !important;
+  color: #ffffff !important;
   border-color: #ffffff;
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.28);
 }
@@ -207,7 +208,7 @@ body {
   gap: 8px;
 }
 
-/* Hiển thị tất cả các phần trên 1 trang duy nhất để cuộn đọc */
+/* Hiển thị tất cả 3 mục trên cùng 1 trang cuộn */
 .main-content {
   flex: 1;
   padding-top: 40px;
@@ -215,12 +216,12 @@ body {
 }
 
 .tab-section {
-  display: block;
+  display: block !important;
   margin-bottom: 72px;
   scroll-margin-top: 95px;
 }
 
-/* Khung thẻ: Nền hoàn toàn trong suốt, chỉ giữ lại viền trắng băng giá */
+/* Khung thẻ: Nền trong suốt, chỉ giữ viền trắng */
 .card,
 .item-card {
   background: transparent !important;
@@ -320,7 +321,7 @@ body {
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
-/* Grid Cards cho Dự án & Bài viết */
+/* Grid Cards */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -396,7 +397,7 @@ body {
   border-top: 1px solid var(--border-frost);
 }
 
-/* Buttons trong suốt có viền */
+/* Buttons */
 .btn {
   padding: 9px 16px;
   border-radius: 10px;
@@ -434,7 +435,7 @@ body {
   font-size: 0.82rem;
 }
 
-/* Modal chỉnh sửa giữ nền kính mờ tối để dễ gõ chữ khi Admin thao tác */
+/* Modal */
 .modal-backdrop {
   position: fixed;
   inset: 0;
