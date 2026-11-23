@@ -11,6 +11,31 @@
   <link rel="stylesheet" href="src/styles.css?v=6" />
 </head>
 <body>
+  <section id="experience-gate" class="experience-gate" aria-labelledby="gate-title">
+    <div class="gate-topline"><span>PHẠM ANH TÚ</span><span>PERSONAL WEBSITE · 2026</span></div>
+    <div class="gate-intro">
+      <p class="gate-eyebrow">HAI CÁCH ĐỂ KHÁM PHÁ</p>
+      <h1 id="gate-title">Chọn hành trình<br><em>của bạn.</em></h1>
+      <p>Một con người, hai góc nhìn. Bạn muốn bắt đầu từ đâu?</p>
+    </div>
+    <div class="gate-choices">
+      <button class="gate-choice gate-choice-winter" onclick="App.enterExperience('winter')">
+        <span class="choice-index">01 / WINTER SPACE</span>
+        <span class="choice-symbol" aria-hidden="true">❄</span>
+        <span class="choice-title">Thế giới của Tú</span>
+        <span class="choice-copy">Ghé thăm không gian cá nhân với những câu chuyện, dự án và điều mình yêu thích.</span>
+        <span class="choice-action">BƯỚC VÀO <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="gate-choice gate-choice-pro" onclick="App.enterExperience('professional')">
+        <span class="choice-index">02 / PROFESSIONAL PORTFOLIO</span>
+        <span class="choice-symbol" aria-hidden="true">✳</span>
+        <span class="choice-title">Hồ sơ chuyên nghiệp</span>
+        <span class="choice-copy">Khám phá kinh nghiệm, năng lực và những dự án nổi bật của mình.</span>
+        <span class="choice-action">XEM PORTFOLIO <span aria-hidden="true">↗</span></span>
+      </button>
+    </div>
+    <p class="gate-footnote">Chọn một cánh cửa. Bạn luôn có thể đổi hành trình sau đó.</p>
+  </section>
   <!-- Hiệu ứng tuyết rơi nhẹ -->
   <canvas id="snow-canvas" class="snow-canvas"></canvas>
 
@@ -72,9 +97,10 @@
 
   <footer class="footer">
     <div class="container footer-inner">
-      <p>❄️ © <span id="year"></span> Phạm Anh Tú — Winter Edition Space</p>
+      <p>❄️ © <span id="year"></span> Phạm Anh Tú — <span id="footer-edition">Winter Edition Space</span></p>
     </div>
   </footer>
+  <button id="experience-switch" class="experience-switch" onclick="App.returnToGate()" aria-label="Chọn lại không gian">ĐỔI KHÔNG GIAN</button>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -90,3 +116,4 @@
   <script src="src/features/admin-panel.js?v=6"></script>
 </body>
 </html>
+
