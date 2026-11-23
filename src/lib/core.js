@@ -217,6 +217,7 @@ window.App = {
     this.state.experience = experience;
     sessionStorage.setItem("anhtu_experience", experience);
     this.applyExperience();
+    this.renderAll();
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
@@ -224,6 +225,7 @@ window.App = {
     this.state.experience = null;
     sessionStorage.removeItem("anhtu_experience");
     this.applyExperience();
+    this.renderAll();
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
