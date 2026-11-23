@@ -4,26 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Phạm Anh Tú | Winter Space</title>
-  <!-- Font & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- CSS chính (kèm ?v=5 để làm mới giao diện ngay lập tức) -->
-  <link rel="stylesheet" href="src/styles.css?v=5" />
+  <link rel="stylesheet" href="src/styles.css?v=6" />
 </head>
 <body>
-  <!-- Nền Ảnh Mùa Đông chuyển động vô tận -->
-  <div class="winter-bg-wrapper" style="position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -2; overflow: hidden;">
-    <!-- Lớp chuyển động vô tận (Đổi thành class "winter-bg-pan" nếu muốn ảnh trôi ngang nối tiếp 360 độ) -->
-    <div class="winter-bg-infinite"></div>
-    <div class="winter-bg-overlay"></div>
-  </div>
+  <!-- Hiệu ứng tuyết rơi nhẹ -->
+  <canvas id="snow-canvas" class="snow-canvas"></canvas>
 
-  <!-- Hiệu ứng những bông tuyết trắng tròn rơi liên tục -->
-  <canvas id="snow-canvas" class="snow-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 50;"></canvas>
-
-  <!-- Thanh điều hướng cuộn mượt tới từng mục -->
+  <!-- Thanh điều hướng -->
   <header class="navbar">
     <div class="container nav-inner">
       <a href="#tab-home" class="brand" onclick="App.switchTab('home'); return false;">
@@ -49,7 +40,7 @@
     </div>
   </header>
 
-  <!-- Thanh công cụ chỉ hiện khi Admin đăng nhập -->
+  <!-- Thanh công cụ Admin -->
   <div id="admin-toolbar" class="admin-toolbar hidden">
     <div class="container admin-toolbar-inner">
       <div class="admin-status">
@@ -70,14 +61,13 @@
     </div>
   </div>
 
-  <!-- Nội dung 1 trang duy nhất (Cuộn mượt từ trên xuống dưới) -->
+  <!-- Nội dung 1 trang duy nhất -->
   <main class="container main-content">
     <section id="tab-home" class="tab-section active"></section>
     <section id="tab-projects" class="tab-section active"></section>
     <section id="tab-blog" class="tab-section active"></section>
   </main>
 
-  <!-- Khu vực chứa Modal chỉnh sửa / đăng nhập -->
   <div id="modal-root"></div>
 
   <footer class="footer">
@@ -91,12 +81,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- Nạp các module -->
-  <script src="src/lib/default-data.js?v=5"></script>
-  <script src="src/lib/core.js?v=5"></script>
-  <script src="src/features/home.js?v=5"></script>
-  <script src="src/features/projects.js?v=5"></script>
-  <script src="src/features/blog.js?v=5"></script>
-  <script src="src/features/admin-panel.js?v=5"></script>
+  <!-- Các module của web -->
+  <script src="src/lib/default-data.js?v=6"></script>
+  <script src="src/lib/core.js?v=6"></script>
+  <script src="src/features/home.js?v=6"></script>
+  <script src="src/features/projects.js?v=6"></script>
+  <script src="src/features/blog.js?v=6"></script>
+  <script src="src/features/admin-panel.js?v=6"></script>
 </body>
 </html>
