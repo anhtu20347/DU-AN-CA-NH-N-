@@ -25,7 +25,8 @@ window.App = {
     isAdmin: false,
     adminUser: null,
     activeTab: "home",
-    isCloudConnected: false
+    isCloudConnected: false,
+    experience: null
   },
 
   init() {
@@ -37,6 +38,8 @@ window.App = {
       : { profile: {}, skills: [], projects: [], posts: [] };
 
     this.state.data = safeParseJSON(localStorage.getItem("anhtu_portfolio_data"), fallbackData);
+    this.state.experience = localStorage.getItem("anhtu_experience");
+    this.applyExperience();
 
     this.renderAll();
     this.initFirebaseIfConfigured();
@@ -210,6 +213,30 @@ window.App = {
     }
   },
 
+  enterExperience(experience) {
+    this.state.experience = experience;
+    localStorage.setItem("anhtu_experience", experience);
+    this.applyExperience();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },
+
+  returnToGate() {
+    this.state.experience = null;
+    localStorage.removeItem("anhtu_experience");
+    this.applyExperience();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },
+
+  applyExperience() {
+    const experience = this.state.experience;
+    document.body.classList.toggle("experience-selected", Boolean(experience));
+    document.body.classList.toggle("experience-professional", experience === "professional");
+    const footerEdition = document.getElementById("footer-edition");
+    if (footerEdition) {
+      footerEdition.textContent = experience === "professional" ? "Professional Portfolio" : "Winter Edition Space";
+    }
+  },
+
   updateSyncBadge(text, isOnline) {
     const badge = document.getElementById("sync-status");
     if (!badge) return;
@@ -266,3 +293,4 @@ window.App = {
 };
 
 document.addEventListener("DOMContentLoaded", () => App.init());
+
