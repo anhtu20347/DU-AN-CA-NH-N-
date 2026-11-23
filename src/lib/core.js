@@ -38,7 +38,7 @@ window.App = {
       : { profile: {}, skills: [], projects: [], posts: [] };
 
     this.state.data = safeParseJSON(localStorage.getItem("anhtu_portfolio_data"), fallbackData);
-    this.state.experience = localStorage.getItem("anhtu_experience");
+    this.state.experience = sessionStorage.getItem("anhtu_experience");
     this.applyExperience();
 
     this.renderAll();
@@ -215,14 +215,14 @@ window.App = {
 
   enterExperience(experience) {
     this.state.experience = experience;
-    localStorage.setItem("anhtu_experience", experience);
+    sessionStorage.setItem("anhtu_experience", experience);
     this.applyExperience();
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
 
   returnToGate() {
     this.state.experience = null;
-    localStorage.removeItem("anhtu_experience");
+    sessionStorage.removeItem("anhtu_experience");
     this.applyExperience();
     window.scrollTo({ top: 0, behavior: "smooth" });
   },
