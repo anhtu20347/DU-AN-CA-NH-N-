@@ -8,10 +8,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="src/styles.css?v=6" />
+  <link rel="stylesheet" href="src/styles.css?v=7" />
 </head>
 <body>
-  <section id="experience-gate" class="experience-gate" aria-labelledby="gate-title">
+  <!-- Cổng chọn 2 không gian -->
+  <section id="experience-gate" class="experience-gate" data-lenis-prevent aria-labelledby="gate-title">
     <div class="gate-topline"><span>PHẠM ANH TÚ</span><span>PERSONAL WEBSITE · 2026</span></div>
     <div class="gate-intro">
       <p class="gate-eyebrow">HAI CÁCH ĐỂ KHÁM PHÁ</p>
@@ -36,6 +37,7 @@
     </div>
     <p class="gate-footnote">Chọn một cánh cửa. Bạn luôn có thể đổi hành trình sau đó.</p>
   </section>
+
   <!-- Hiệu ứng tuyết rơi nhẹ -->
   <canvas id="snow-canvas" class="snow-canvas"></canvas>
 
@@ -65,7 +67,7 @@
     </div>
   </header>
 
-  <!-- Thanh công cụ Admin -->
+  <!-- Thanh công cụ Admin (Chỉ hiện khi đã đăng nhập) -->
   <div id="admin-toolbar" class="admin-toolbar hidden">
     <div class="container admin-toolbar-inner">
       <div class="admin-status">
@@ -86,6 +88,73 @@
     </div>
   </div>
 
+  <!-- Osmo Multi-Layer Parallax Scrolling Header (Chỉ hiện ở Winter Space) -->
+  <section id="parallax-hero" class="parallax" aria-label="Winter Parallax Intro">
+    <div class="parallax__header">
+      <div class="parallax__visuals">
+        <div class="parallax__black-line-overflow"></div>
+        <div data-parallax-layers class="parallax__layers">
+          <!-- Layer 1: Bầu trời đêm, ánh cực quang & đỉnh núi xa -->
+          <div data-parallax-layer="1" class="parallax__layer-item parallax__layer-sky">
+            <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" class="parallax__svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="winterSkyGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#050914" />
+                  <stop offset="48%" stop-color="#0d1b32" />
+                  <stop offset="100%" stop-color="#193354" />
+                </linearGradient>
+                <radialGradient id="auroraGlow" cx="50%" cy="28%" r="55%">
+                  <stop offset="0%" stop-color="rgba(125, 211, 252, 0.34)" />
+                  <stop offset="60%" stop-color="rgba(56, 189, 248, 0.08)" />
+                  <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
+                </radialGradient>
+              </defs>
+              <rect width="1440" height="900" fill="url(#winterSkyGrad)" />
+              <rect width="1440" height="900" fill="url(#auroraGlow)" />
+              <circle cx="1140" cy="170" r="46" fill="#e0f2fe" opacity="0.88" />
+              <circle cx="1140" cy="170" r="88" fill="#7dd3fc" opacity="0.16" />
+              <path d="M0 640 L210 430 L390 550 L620 350 L870 530 L1110 380 L1320 510 L1440 440 L1440 900 L0 900 Z" fill="#132540" opacity="0.88" />
+            </svg>
+          </div>
+
+          <!-- Layer 2: Dãy núi tuyết trung cảnh -->
+          <div data-parallax-layer="2" class="parallax__layer-item parallax__layer-mid">
+            <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" class="parallax__svg" aria-hidden="true">
+              <path d="M0 690 L180 510 L360 615 L560 460 L790 610 L1020 475 L1260 610 L1440 520 L1440 900 L0 900 Z" fill="#0f1e36" />
+              <path d="M180 510 L235 550 L198 548 L175 568 L152 544 Z M560 460 L625 512 L582 505 L555 528 L525 498 Z M1020 475 L1085 526 L1042 520 L1012 542 L982 515 Z" fill="#bae6fd" opacity="0.28" />
+            </svg>
+          </div>
+
+          <!-- Layer 3: Tiêu đề lớn trượt phía sau dãy núi tiền cảnh -->
+          <div data-parallax-layer="3" class="parallax__layer-title">
+            <p class="parallax__eyebrow">WINTER EDITION · 2026</p>
+            <h1 class="parallax__title">Phạm Anh Tú</h1>
+            <button type="button" class="parallax__scroll-cue" onclick="App.switchTab('home')">
+              Cuộn xuống để khám phá <i class="fa-solid fa-arrow-down"></i>
+            </button>
+          </div>
+
+          <!-- Layer 4: Đồi tuyết & rừng thông tiền cảnh -->
+          <div data-parallax-layer="4" class="parallax__layer-item parallax__layer-front">
+            <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" class="parallax__svg" aria-hidden="true">
+              <path d="M0 725 Q240 660 490 740 T980 720 T1440 690 L1440 900 L0 900 Z" fill="#090e1a" />
+              <!-- Bóng cây thông hai bên -->
+              <g fill="#090e1a">
+                <polygon points="95,620 55,740 135,740" />
+                <polygon points="165,645 130,745 200,745" />
+                <polygon points="240,670 212,750 268,750" />
+                <polygon points="1210,660 1180,748 1240,748" />
+                <polygon points="1290,625 1252,742 1328,742" />
+                <polygon points="1365,600 1320,740 1410,740" />
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="parallax__fade"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- Nội dung 1 trang duy nhất -->
   <main class="container main-content">
     <section id="tab-home" class="tab-section active"></section>
@@ -93,7 +162,7 @@
     <section id="tab-blog" class="tab-section active"></section>
   </main>
 
-  <div id="modal-root"></div>
+  <div id="modal-root" data-lenis-prevent></div>
 
   <footer class="footer">
     <div class="container footer-inner">
@@ -107,13 +176,17 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
+  <!-- GSAP ScrollTrigger & Lenis (Osmo Parallax Engine) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
   <!-- Các module của web -->
-  <script src="src/lib/default-data.js?v=6"></script>
-  <script src="src/lib/core.js?v=6"></script>
-  <script src="src/features/home.js?v=6"></script>
-  <script src="src/features/projects.js?v=6"></script>
-  <script src="src/features/blog.js?v=6"></script>
-  <script src="src/features/admin-panel.js?v=6"></script>
+  <script src="src/lib/default-data.js?v=7"></script>
+  <script src="src/lib/core.js?v=7"></script>
+  <script src="src/features/home.js?v=7"></script>
+  <script src="src/features/projects.js?v=7"></script>
+  <script src="src/features/blog.js?v=7"></script>
+  <script src="src/features/admin-panel.js?v=7"></script>
 </body>
 </html>
-
