@@ -573,4 +573,144 @@ textarea.form-control {
     justify-content: center;
   }
 }
+/* =========================================================
+   OSMO MULTI-LAYER PARALLAX SCROLLING (WINTER SPACE)
+   ========================================================= */
+.parallax {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  z-index: 5;
+}
 
+.experience-professional .parallax {
+  display: none !important;
+}
+
+.parallax__header {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 68px);
+  min-height: 540px;
+  max-height: 920px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.parallax__visuals {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.parallax__black-line-overflow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.parallax__layers {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.parallax__layer-item {
+  position: absolute;
+  inset: -12% 0 0 0;
+  width: 100%;
+  height: 124%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.parallax__layer-sky { z-index: 1; }
+.parallax__layer-mid { z-index: 2; }
+.parallax__layer-front { z-index: 4; }
+
+.parallax__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.parallax__layer-title {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px 10vh;
+  will-change: transform;
+}
+
+.parallax__eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: #bae6fd;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+
+.parallax__title {
+  font-size: clamp(2.6rem, 8.8vw, 7.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: #ffffff;
+  text-shadow: 0 12px 42px rgba(5, 10, 24, 0.72);
+  margin-bottom: 22px;
+}
+
+.parallax__scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 99px;
+  border: 1px solid rgba(186, 230, 253, 0.45);
+  background: rgba(9, 14, 26, 0.38);
+  backdrop-filter: blur(8px);
+  color: #e0f2fe;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.parallax__scroll-cue:hover {
+  transform: translateY(3px);
+  border-color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.16);
+}
+
+.parallax__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(to top, #090e1a 0%, rgba(9, 14, 26, 0.72) 45%, rgba(9, 14, 26, 0) 100%);
+}
+
+@media (max-width: 768px) {
+  .parallax__header {
+    height: 78vh;
+    min-height: 460px;
+  }
+  .parallax__layer-title {
+    padding-bottom: 6vh;
+  }
+}
