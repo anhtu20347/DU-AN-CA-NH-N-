@@ -28,7 +28,6 @@ window.App = {
     isCloudConnected: false,
     experience: null
   },
-  lenis: null,
 
   getAllowedAdminEmail() {
     const configObj = safeParseJSON(localStorage.getItem("anhtu_firebase_config"), DEFAULT_CLOUD_CONFIG);
@@ -45,146 +44,196 @@ window.App = {
 
     this.state.data = safeParseJSON(localStorage.getItem("anhtu_portfolio_data"), fallbackData);
     this.state.experience = sessionStorage.getItem("anhtu_experience");
-    this.applyExperience();
 
-    this.renderAll();
-    this.initFirebaseIfConfigured();
     this.initSnowfall();
     this.initParallax();
+    this.applyExperience();
+    this.renderAll();
+    this.initFirebaseIfConfigured();
     this.initScrollSpy();
   },
 
-  // Chuyển động Osmo Parallax Scrolling (GSAP ScrollTrigger + Lenis)
+  // Parallax 4 lớp siêu nhẹ bằng GPU (tự ngắt khi cuộn xuống nội dung dưới)
   initParallax() {
-    const triggerElement = document.querySelector("[data-parallax-layers]");
-    if (!triggerElement) return;
+    const hero = document.getElementById("parallax-hero");
+    const container = document.querySelector("[data-parallax-layers]");
+    if (!hero || !container) return;
 
-    const layers = [
-      { layer: "1", yPercent: 70 },
-      { layer: "2", yPercent: 55 },
-      { layer: "3", yPercent: 40 },
-      { layer: "4", yPercent: 10 }
-    ];
+    const layerConfigs = [
+      { el: container.querySelector('[data-parallax-layer="1"]'), factor: 0.52 },
+      { el: container.querySelector('[data-parallax-layer="2"]'), factor: 0.38 },
+      { el: container.querySelector('[data-parallax-layer="3"]'), factor: 0.34 },
+      { el: container.querySelector('[data-parallax-layer="4"]'), factor: 0.06 }
+    ].filter((item) => item.el);
 
-    if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
+    let heroHeight = hero.offsetHeight || window.innerHeight;
+    let targetY = window.scrollY;
+    let currentY = targetY;
+    let rafId = null;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: triggerElement,
-          start: "0% 0%",
-          end: "100% 0%",
-          scrub: 0
-        }
-      });
+    const updateMetrics = () => {
+      heroHeight = hero.offsetHeight || window.innerHeight;
+    };
 
-      layers.forEach((layerObj, idx) => {
-        tl.to(
-          triggerElement.querySelectorAll(`[data-parallax-layer="${layerObj.layer}"]`),
-          {
-            yPercent: layerObj.yPercent,
-            ease: "none"
-          },
-          idx === 0 ? undefined : "<"
-        );
-      });
-
-      if (typeof Lenis !== "undefined") {
-        const lenis = new Lenis({
-          duration: 1.15,
-          smoothWheel: true
-        });
-        this.lenis = lenis;
-        lenis.on("scroll", ScrollTrigger.update);
-        gsap.ticker.add((time) => {
-          lenis.raf(time * 1000);
-        });
-        gsap.ticker.lagSmoothing(0);
+    const applyTransforms = (y) => {
+      for (let i = 0; i < layerConfigs.length; i++) {
+        const item = layerConfigs[i];
+        item.el.style.transform = `translate3d(0, ${(y * item.factor).toFixed(2)}px, 0)`;
       }
-    } else {
-      // Dự phòng nếu CDN GSAP tải chậm: chạy parallax thuần JS
-      window.addEventListener(
-        "scroll",
-        () => {
-          const rect = triggerElement.getBoundingClientRect();
-          const progress = Math.min(Math.max(-rect.top / (rect.height || 1), 0), 1);
-          layers.forEach((layerObj) => {
-            triggerElement
-              .querySelectorAll(`[data-parallax-layer="${layerObj.layer}"]`)
-              .forEach((el) => {
-                el.style.transform = `translate3d(0, ${progress * layerObj.yPercent}%, 0)`;
-              });
-          });
-        },
-        { passive: true }
-      );
-    }
+    };
+
+    const renderFrame = () => {
+      if (this.state.experience !== "winter") {
+        rafId = null;
+        return;
+      }
+
+      const clampedTarget = Math.min(Math.max(targetY, 0), heroHeight);
+      currentY += (clampedTarget - currentY) * 0.18;
+
+      if (Math.abs(clampedTarget - currentY) < 0.35) {
+        currentY = clampedTarget;
+        applyTransforms(currentY);
+        rafId = null;
+        return;
+      }
+
+      applyTransforms(currentY);
+      rafId = requestAnimationFrame(renderFrame);
+    };
+
+    const onScroll = () => {
+      targetY = window.scrollY;
+      if (
+        !rafId &&
+        this.state.experience === "winter" &&
+        (targetY <= heroHeight + 120 || currentY < heroHeight)
+      ) {
+        rafId = requestAnimationFrame(renderFrame);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateMetrics, { passive: true });
+
+    this.refreshParallax = () => {
+      updateMetrics();
+      targetY = window.scrollY;
+      currentY = Math.min(Math.max(targetY, 0), heroHeight);
+      applyTransforms(currentY);
+    };
   },
 
+  // Tuyết rơi tối ưu: gom 3 lệnh vẽ/khung hình & tự tạm dừng khi không ở Winter Space
   initSnowfall() {
     const canvas = document.getElementById("snow-canvas");
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
 
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    window.addEventListener("resize", () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
+    let resizeTimer = null;
+    window.addEventListener(
+      "resize",
+      () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        }, 150);
+      },
+      { passive: true }
+    );
 
-    const flakeCount = window.innerWidth < 768 ? 55 : 95;
-    const flakes = Array.from({ length: flakeCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      r: Math.random() * 3 + 1.2,
-      speedY: Math.random() * 1.2 + 0.4,
-      speedX: (Math.random() - 0.5) * 0.6,
-      swing: Math.random() * Math.PI * 2,
-      swingSpeed: Math.random() * 0.02 + 0.008,
-      opacity: Math.random() * 0.5 + 0.3
-    }));
+    const flakeCount = window.innerWidth < 768 ? 30 : 48;
+    const opacityLevels = [0.3, 0.52, 0.78];
+    const buckets = [[], [], []];
 
-    function drawSnow() {
-      ctx.clearRect(0, 0, width, height);
-      for (const f of flakes) {
-        f.swing += f.swingSpeed;
-        f.y += f.speedY;
-        f.x += f.speedX + Math.sin(f.swing) * 0.4;
-
-        if (f.y > height + 10) {
-          f.y = -10;
-          f.x = Math.random() * width;
-        }
-        if (f.x > width + 10) f.x = -10;
-        if (f.x < -10) f.x = width + 10;
-
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
-        ctx.fill();
-      }
-      requestAnimationFrame(drawSnow);
+    for (let i = 0; i < flakeCount; i++) {
+      buckets[i % 3].push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 2.2 + 1.1,
+        speedY: Math.random() * 0.95 + 0.45,
+        speedX: (Math.random() - 0.5) * 0.45,
+        swing: Math.random() * Math.PI * 2,
+        swingSpeed: Math.random() * 0.016 + 0.006
+      });
     }
 
-    drawSnow();
+    let snowRafId = null;
+    const shouldRun = () => !document.hidden && this.state.experience === "winter";
+
+    const drawSnow = () => {
+      if (!shouldRun()) {
+        snowRafId = null;
+        ctx.clearRect(0, 0, width, height);
+        return;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+      for (let b = 0; b < 3; b++) {
+        const list = buckets[b];
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, 255, 255, ${opacityLevels[b]})`;
+        for (let i = 0; i < list.length; i++) {
+          const f = list[i];
+          f.swing += f.swingSpeed;
+          f.y += f.speedY;
+          f.x += f.speedX + Math.sin(f.swing) * 0.35;
+
+          if (f.y > height + 8) {
+            f.y = -8;
+            f.x = Math.random() * width;
+          }
+          if (f.x > width + 8) f.x = -8;
+          if (f.x < -8) f.x = width + 8;
+
+          ctx.moveTo(f.x + f.r, f.y);
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        }
+        ctx.fill();
+      }
+      snowRafId = requestAnimationFrame(drawSnow);
+    };
+
+    this.syncSnowState = () => {
+      if (shouldRun() && !snowRafId) {
+        snowRafId = requestAnimationFrame(drawSnow);
+      } else if (!shouldRun() && snowRafId) {
+        cancelAnimationFrame(snowRafId);
+        snowRafId = null;
+        ctx.clearRect(0, 0, width, height);
+      }
+    };
+
+    document.addEventListener("visibilitychange", () => this.syncSnowState());
   },
 
+  // ScrollSpy dùng IntersectionObserver (không đọc offsetTop khi cuộn)
   initScrollSpy() {
-    window.addEventListener("scroll", () => {
-      const sections = ["home", "projects", "blog"];
-      let current = "home";
-      for (const id of sections) {
-        const el = document.getElementById(`tab-${id}`);
-        if (el && window.scrollY >= el.offsetTop - 220) {
-          current = id;
+    const sections = ["home", "projects", "blog"]
+      .map((id) => document.getElementById(`tab-${id}`))
+      .filter(Boolean);
+
+    if (!sections.length || !("IntersectionObserver" in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (let i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            const id = entries[i].target.id.replace("tab-", "");
+            document.querySelectorAll(".nav-btn").forEach((btn) => {
+              btn.classList.toggle("active", btn.dataset.tab === id);
+            });
+          }
         }
-      }
-      document.querySelectorAll(".nav-btn").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.tab === current);
-      });
-    });
+      },
+      { rootMargin: "-28% 0px -55% 0px", threshold: 0 }
+    );
+
+    sections.forEach((el) => observer.observe(el));
   },
 
   initFirebaseIfConfigured() {
@@ -287,11 +336,7 @@ window.App = {
     });
     const targetSection = document.getElementById(`tab-${tabName}`);
     if (targetSection) {
-      if (this.lenis) {
-        this.lenis.scrollTo(targetSection, { offset: -80 });
-      } else {
-        targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   },
 
@@ -300,14 +345,8 @@ window.App = {
     sessionStorage.setItem("anhtu_experience", experience);
     this.applyExperience();
     this.renderAll();
-    if (this.lenis) {
-      this.lenis.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    setTimeout(() => {
-      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
-    }, 120);
+    window.scrollTo({ top: 0, behavior: "auto" });
+    if (this.refreshParallax) this.refreshParallax();
   },
 
   returnToGate() {
@@ -315,11 +354,7 @@ window.App = {
     sessionStorage.removeItem("anhtu_experience");
     this.applyExperience();
     this.renderAll();
-    if (this.lenis) {
-      this.lenis.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    window.scrollTo({ top: 0, behavior: "auto" });
   },
 
   applyExperience() {
@@ -331,6 +366,8 @@ window.App = {
       footerEdition.textContent =
         experience === "professional" ? "Professional Portfolio" : "Winter Edition Space";
     }
+    if (this.syncSnowState) this.syncSnowState();
+    if (this.refreshParallax) this.refreshParallax();
   },
 
   updateSyncBadge(text, isOnline) {
