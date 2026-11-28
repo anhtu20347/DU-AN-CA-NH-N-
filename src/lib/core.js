@@ -28,6 +28,12 @@ window.App = {
     isCloudConnected: false,
     experience: null
   },
+  lenis: null,
+
+  getAllowedAdminEmail() {
+    const configObj = safeParseJSON(localStorage.getItem("anhtu_firebase_config"), DEFAULT_CLOUD_CONFIG);
+    return ((configObj && configObj.adminEmail) || DEFAULT_CLOUD_CONFIG.adminEmail).trim().toLowerCase();
+  },
 
   init() {
     const yearEl = document.getElementById("year");
@@ -44,7 +50,75 @@ window.App = {
     this.renderAll();
     this.initFirebaseIfConfigured();
     this.initSnowfall();
+    this.initParallax();
     this.initScrollSpy();
+  },
+
+  // Chuyển động Osmo Parallax Scrolling (GSAP ScrollTrigger + Lenis)
+  initParallax() {
+    const triggerElement = document.querySelector("[data-parallax-layers]");
+    if (!triggerElement) return;
+
+    const layers = [
+      { layer: "1", yPercent: 70 },
+      { layer: "2", yPercent: 55 },
+      { layer: "3", yPercent: 40 },
+      { layer: "4", yPercent: 10 }
+    ];
+
+    if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: triggerElement,
+          start: "0% 0%",
+          end: "100% 0%",
+          scrub: 0
+        }
+      });
+
+      layers.forEach((layerObj, idx) => {
+        tl.to(
+          triggerElement.querySelectorAll(`[data-parallax-layer="${layerObj.layer}"]`),
+          {
+            yPercent: layerObj.yPercent,
+            ease: "none"
+          },
+          idx === 0 ? undefined : "<"
+        );
+      });
+
+      if (typeof Lenis !== "undefined") {
+        const lenis = new Lenis({
+          duration: 1.15,
+          smoothWheel: true
+        });
+        this.lenis = lenis;
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add((time) => {
+          lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+      }
+    } else {
+      // Dự phòng nếu CDN GSAP tải chậm: chạy parallax thuần JS
+      window.addEventListener(
+        "scroll",
+        () => {
+          const rect = triggerElement.getBoundingClientRect();
+          const progress = Math.min(Math.max(-rect.top / (rect.height || 1), 0), 1);
+          layers.forEach((layerObj) => {
+            triggerElement
+              .querySelectorAll(`[data-parallax-layer="${layerObj.layer}"]`)
+              .forEach((el) => {
+                el.style.transform = `translate3d(0, ${progress * layerObj.yPercent}%, 0)`;
+              });
+          });
+        },
+        { passive: true }
+      );
+    }
   },
 
   initSnowfall() {
@@ -120,7 +194,10 @@ window.App = {
     }
 
     const configObj = safeParseJSON(localStorage.getItem("anhtu_firebase_config"), DEFAULT_CLOUD_CONFIG);
-    const fbConfig = (configObj && configObj.firebaseConfig) ? configObj.firebaseConfig : DEFAULT_CLOUD_CONFIG.firebaseConfig;
+    const fbConfig =
+      configObj && configObj.firebaseConfig
+        ? configObj.firebaseConfig
+        : DEFAULT_CLOUD_CONFIG.firebaseConfig;
 
     try {
       if (!firebase.apps.length) {
@@ -148,8 +225,8 @@ window.App = {
       );
 
       firebase.auth().onAuthStateChanged((user) => {
-        const allowedEmail = ((configObj && configObj.adminEmail) || DEFAULT_CLOUD_CONFIG.adminEmail).trim().toLowerCase();
-        if (user && user.email.toLowerCase() === allowedEmail) {
+        const allowedEmail = this.getAllowedAdminEmail();
+        if (user && user.email && user.email.toLowerCase() === allowedEmail) {
           this.setAdminSession(true, user.email);
         } else {
           if (user) firebase.auth().signOut();
@@ -177,6 +254,7 @@ window.App = {
       } else {
         toolbar.classList.add("hidden");
         adminBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Admin`;
+        emailSpan.textContent = "Admin";
       }
     }
     this.renderAll();
@@ -209,7 +287,11 @@ window.App = {
     });
     const targetSection = document.getElementById(`tab-${tabName}`);
     if (targetSection) {
-      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (this.lenis) {
+        this.lenis.scrollTo(targetSection, { offset: -80 });
+      } else {
+        targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
   },
 
@@ -218,7 +300,14 @@ window.App = {
     sessionStorage.setItem("anhtu_experience", experience);
     this.applyExperience();
     this.renderAll();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (this.lenis) {
+      this.lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    setTimeout(() => {
+      if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+    }, 120);
   },
 
   returnToGate() {
@@ -226,7 +315,11 @@ window.App = {
     sessionStorage.removeItem("anhtu_experience");
     this.applyExperience();
     this.renderAll();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (this.lenis) {
+      this.lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   },
 
   applyExperience() {
@@ -235,7 +328,8 @@ window.App = {
     document.body.classList.toggle("experience-professional", experience === "professional");
     const footerEdition = document.getElementById("footer-edition");
     if (footerEdition) {
-      footerEdition.textContent = experience === "professional" ? "Professional Portfolio" : "Winter Edition Space";
+      footerEdition.textContent =
+        experience === "professional" ? "Professional Portfolio" : "Winter Edition Space";
     }
   },
 
@@ -295,4 +389,3 @@ window.App = {
 };
 
 document.addEventListener("DOMContentLoaded", () => App.init());
-
