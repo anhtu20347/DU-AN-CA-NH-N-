@@ -574,13 +574,46 @@ textarea.form-control {
   }
 }
 /* =========================================================
-   OSMO MULTI-LAYER PARALLAX SCROLLING (WINTER SPACE)
+   TỐI ƯU HIỆU NĂNG CUỘN & GPU COMPOSITING
+   ========================================================= */
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background-attachment: scroll !important;
+}
+
+.navbar {
+  background: rgba(9, 14, 26, 0.94);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.experience-professional .navbar {
+  background: rgba(248, 247, 242, 0.96);
+}
+
+.experience-switch {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(15, 23, 42, 0.95);
+}
+
+.card,
+.item-card {
+  contain: layout style;
+}
+
+/* =========================================================
+   PARALLAX SCROLLING 4 LỚP (GPU-ACCELERATED)
    ========================================================= */
 .parallax {
   position: relative;
   width: 100%;
   overflow: hidden;
   z-index: 5;
+  contain: layout paint;
 }
 
 .experience-professional .parallax {
@@ -591,8 +624,8 @@ textarea.form-control {
   position: relative;
   width: 100%;
   height: calc(100vh - 68px);
-  min-height: 540px;
-  max-height: 920px;
+  min-height: 520px;
+  max-height: 880px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -623,11 +656,13 @@ textarea.form-control {
 
 .parallax__layer-item {
   position: absolute;
-  inset: -12% 0 0 0;
+  inset: -14% 0 0 0;
   width: 100%;
-  height: 124%;
+  height: 128%;
   pointer-events: none;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .parallax__layer-sky { z-index: 1; }
@@ -651,6 +686,8 @@ textarea.form-control {
   text-align: center;
   padding: 0 20px 10vh;
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .parallax__eyebrow {
@@ -668,7 +705,7 @@ textarea.form-control {
   line-height: 1.05;
   letter-spacing: -0.04em;
   color: #ffffff;
-  text-shadow: 0 12px 42px rgba(5, 10, 24, 0.72);
+  text-shadow: 0 10px 30px rgba(5, 10, 24, 0.65);
   margin-bottom: 22px;
 }
 
@@ -679,19 +716,18 @@ textarea.form-control {
   padding: 10px 20px;
   border-radius: 99px;
   border: 1px solid rgba(186, 230, 253, 0.45);
-  background: rgba(9, 14, 26, 0.38);
-  backdrop-filter: blur(8px);
+  background: rgba(9, 14, 26, 0.72);
   color: #e0f2fe;
   font-size: 0.86rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .parallax__scroll-cue:hover {
   transform: translateY(3px);
   border-color: #7dd3fc;
-  background: rgba(56, 189, 248, 0.16);
+  background: rgba(56, 189, 248, 0.2);
 }
 
 .parallax__fade {
@@ -707,10 +743,17 @@ textarea.form-control {
 
 @media (max-width: 768px) {
   .parallax__header {
-    height: 78vh;
-    min-height: 460px;
+    height: 76vh;
+    min-height: 440px;
   }
   .parallax__layer-title {
     padding-bottom: 6vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax__layer-item,
+  .parallax__layer-title {
+    transform: none !important;
   }
 }
