@@ -8,11 +8,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="src/styles.css?v=7" />
+  <link rel="stylesheet" href="src/styles.css?v=8" />
 </head>
 <body>
   <!-- Cổng chọn 2 không gian -->
-  <section id="experience-gate" class="experience-gate" data-lenis-prevent aria-labelledby="gate-title">
+  <section id="experience-gate" class="experience-gate" aria-labelledby="gate-title">
     <div class="gate-topline"><span>PHẠM ANH TÚ</span><span>PERSONAL WEBSITE · 2026</span></div>
     <div class="gate-intro">
       <p class="gate-eyebrow">HAI CÁCH ĐỂ KHÁM PHÁ</p>
@@ -38,7 +38,7 @@
     <p class="gate-footnote">Chọn một cánh cửa. Bạn luôn có thể đổi hành trình sau đó.</p>
   </section>
 
-  <!-- Hiệu ứng tuyết rơi nhẹ -->
+  <!-- Hiệu ứng tuyết rơi tối ưu GPU -->
   <canvas id="snow-canvas" class="snow-canvas"></canvas>
 
   <!-- Thanh điều hướng -->
@@ -67,7 +67,7 @@
     </div>
   </header>
 
-  <!-- Thanh công cụ Admin (Chỉ hiện khi đã đăng nhập) -->
+  <!-- Thanh công cụ Admin -->
   <div id="admin-toolbar" class="admin-toolbar hidden">
     <div class="container admin-toolbar-inner">
       <div class="admin-status">
@@ -88,13 +88,13 @@
     </div>
   </div>
 
-  <!-- Osmo Multi-Layer Parallax Scrolling Header (Chỉ hiện ở Winter Space) -->
+  <!-- Parallax 4 lớp tối ưu tốc độ khung hình (Chỉ hiện ở Winter Space) -->
   <section id="parallax-hero" class="parallax" aria-label="Winter Parallax Intro">
     <div class="parallax__header">
       <div class="parallax__visuals">
         <div class="parallax__black-line-overflow"></div>
         <div data-parallax-layers class="parallax__layers">
-          <!-- Layer 1: Bầu trời đêm, ánh cực quang & đỉnh núi xa -->
+          <!-- Layer 1: Bầu trời đêm & núi xa -->
           <div data-parallax-layer="1" class="parallax__layer-item parallax__layer-sky">
             <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" class="parallax__svg" aria-hidden="true">
               <defs>
@@ -125,7 +125,7 @@
             </svg>
           </div>
 
-          <!-- Layer 3: Tiêu đề lớn trượt phía sau dãy núi tiền cảnh -->
+          <!-- Layer 3: Tiêu đề trượt ra sau đồi thông -->
           <div data-parallax-layer="3" class="parallax__layer-title">
             <p class="parallax__eyebrow">WINTER EDITION · 2026</p>
             <h1 class="parallax__title">Phạm Anh Tú</h1>
@@ -138,7 +138,6 @@
           <div data-parallax-layer="4" class="parallax__layer-item parallax__layer-front">
             <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" class="parallax__svg" aria-hidden="true">
               <path d="M0 725 Q240 660 490 740 T980 720 T1440 690 L1440 900 L0 900 Z" fill="#090e1a" />
-              <!-- Bóng cây thông hai bên -->
               <g fill="#090e1a">
                 <polygon points="95,620 55,740 135,740" />
                 <polygon points="165,645 130,745 200,745" />
@@ -162,7 +161,7 @@
     <section id="tab-blog" class="tab-section active"></section>
   </main>
 
-  <div id="modal-root" data-lenis-prevent></div>
+  <div id="modal-root"></div>
 
   <footer class="footer">
     <div class="container footer-inner">
@@ -176,17 +175,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-  <!-- GSAP ScrollTrigger & Lenis (Osmo Parallax Engine) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
-
   <!-- Các module của web -->
-  <script src="src/lib/default-data.js?v=7"></script>
-  <script src="src/lib/core.js?v=7"></script>
-  <script src="src/features/home.js?v=7"></script>
-  <script src="src/features/projects.js?v=7"></script>
-  <script src="src/features/blog.js?v=7"></script>
-  <script src="src/features/admin-panel.js?v=7"></script>
+  <script src="src/lib/default-data.js?v=8"></script>
+  <script src="src/lib/core.js?v=8"></script>
+  <script src="src/features/home.js?v=8"></script>
+  <script src="src/features/projects.js?v=8"></script>
+  <script src="src/features/blog.js?v=8"></script>
+  <script src="src/features/admin-panel.js?v=8"></script>
 </body>
 </html>
